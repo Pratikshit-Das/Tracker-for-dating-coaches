@@ -1,0 +1,1169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FIELD LOG — DG Tracker</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+
+:root {
+  --ink:    #0f0f0f;
+  --paper:  #f5f2ec;
+  --paper2: #ede9e0;
+  --rule:   #d5cfc3;
+  --ghost:  #b8b1a5;
+  --lime:   #c8f55a;
+  --lime2:  #a8d93a;
+  --red:    #e63946;
+  --amber:  #f4a261;
+  --type-d: 'Bebas Neue', sans-serif;
+  --type-s: 'Instrument Serif', serif;
+  --type-m: 'DM Mono', monospace;
+}
+
+html { scroll-behavior:smooth; }
+
+body {
+  background:var(--paper);
+  color:var(--ink);
+  font-family:var(--type-m);
+  font-size:13px;
+  min-height:100vh;
+  overflow-x:hidden;
+}
+
+body::after {
+  content:'';
+  position:fixed; inset:0;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
+  pointer-events:none; z-index:9999; mix-blend-mode:multiply;
+}
+
+/* ══════════════════
+   LOGIN
+══════════════════ */
+#login-screen {
+  min-height:100vh;
+  display:flex;
+  align-items:stretch;
+}
+
+.login-left {
+  flex:1;
+  background:var(--ink);
+  display:flex;
+  flex-direction:column;
+  justify-content:space-between;
+  padding:52px 60px;
+  position:relative;
+  overflow:hidden;
+}
+
+.login-bg-text {
+  position:absolute;
+  font-family:var(--type-d);
+  font-size:clamp(120px,20vw,220px);
+  line-height:.82;
+  color:rgba(255,255,255,.04);
+  bottom:-16px; left:-8px;
+  pointer-events:none;
+  letter-spacing:-3px;
+  user-select:none;
+}
+
+.login-eyebrow {
+  font-family:var(--type-m);
+  font-size:10px;
+  letter-spacing:4px;
+  color:var(--ghost);
+  text-transform:uppercase;
+}
+
+.login-hero {
+  font-family:var(--type-d);
+  font-size:clamp(64px,10vw,124px);
+  line-height:.88;
+  color:#fff;
+  letter-spacing:1px;
+}
+
+.login-hero em {
+  font-family:var(--type-s);
+  font-style:italic;
+  color:var(--lime);
+}
+
+.login-tagline {
+  font-family:var(--type-m);
+  font-size:11px;
+  color:var(--ghost);
+  letter-spacing:1px;
+  line-height:1.8;
+  max-width:280px;
+  font-style:italic;
+}
+
+/* animated dots */
+.dots-row {
+  display:flex;
+  gap:10px;
+  margin-top:4px;
+}
+.dot {
+  width:7px; height:7px;
+  border-radius:50%;
+  background:var(--lime);
+  animation:dotpop .6s ease both;
+}
+.dot:nth-child(2){animation-delay:.1s; background:rgba(200,245,90,.6);}
+.dot:nth-child(3){animation-delay:.2s; background:rgba(200,245,90,.3);}
+@keyframes dotpop {
+  from{opacity:0;transform:scale(0);}
+  to{opacity:1;transform:scale(1);}
+}
+
+/* right side */
+.login-right {
+  width:420px;
+  background:var(--paper);
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  padding:64px 52px;
+  position:relative;
+}
+
+.login-right::before {
+  content:'';
+  position:absolute;
+  top:0; left:0;
+  width:3px; height:100%;
+  background:var(--ink);
+}
+
+.lf-label {
+  font-family:var(--type-d);
+  font-size:40px;
+  letter-spacing:2px;
+  line-height:1;
+  margin-bottom:6px;
+}
+
+.lf-sub {
+  font-size:10px;
+  letter-spacing:2px;
+  color:var(--ghost);
+  text-transform:uppercase;
+  margin-bottom:40px;
+}
+
+.field { margin-bottom:24px; }
+
+.field label {
+  display:block;
+  font-size:9px;
+  letter-spacing:3px;
+  text-transform:uppercase;
+  color:var(--ghost);
+  margin-bottom:9px;
+}
+
+.field input {
+  width:100%;
+  background:transparent;
+  border:none;
+  border-bottom:1.5px solid var(--ink);
+  padding:10px 0;
+  font-family:var(--type-m);
+  font-size:16px;
+  color:var(--ink);
+  outline:none;
+  transition:border-color .2s;
+}
+
+.field input::placeholder { color:var(--rule); }
+.field input:focus { border-bottom-color:var(--lime2); }
+
+.login-btn {
+  margin-top:10px;
+  width:100%;
+  background:var(--ink);
+  color:var(--paper);
+  border:none;
+  padding:16px 24px;
+  font-family:var(--type-d);
+  font-size:20px;
+  letter-spacing:3px;
+  cursor:pointer;
+  position:relative;
+  overflow:hidden;
+  transition:transform .1s;
+}
+
+.login-btn::after {
+  content:'';
+  position:absolute; inset:0;
+  background:var(--lime);
+  transform:translateX(-101%);
+  transition:transform .38s cubic-bezier(.77,0,.18,1);
+  z-index:0;
+}
+.login-btn:hover::after { transform:translateX(0); }
+.login-btn:hover { color:var(--ink); }
+.login-btn span { position:relative; z-index:1; }
+.login-btn:active { transform:scale(.99); }
+
+.login-err {
+  display:none;
+  margin-top:14px;
+  font-size:10px;
+  letter-spacing:2px;
+  color:var(--red);
+  text-transform:uppercase;
+}
+
+/* ══════════════════
+   APP SHELL
+══════════════════ */
+#app-screen { display:none; }
+
+/* Topbar */
+.topbar {
+  height:52px;
+  background:var(--ink);
+  display:flex;
+  align-items:center;
+  padding:0 32px;
+  justify-content:space-between;
+  position:sticky; top:0; z-index:100;
+}
+
+.tb-brand {
+  font-family:var(--type-d);
+  font-size:20px;
+  color:var(--paper);
+  letter-spacing:3px;
+  display:flex;
+  align-items:center;
+  gap:12px;
+}
+
+.live-dot {
+  width:7px; height:7px;
+  border-radius:50%;
+  background:var(--lime);
+  animation:blink 2.4s ease-in-out infinite;
+}
+@keyframes blink {
+  0%,100%{opacity:1;transform:scale(1);}
+  50%{opacity:.3;transform:scale(.6);}
+}
+
+.save-chip {
+  font-family:var(--type-m);
+  font-size:9px;
+  letter-spacing:2px;
+  text-transform:uppercase;
+  background:rgba(200,245,90,.15);
+  color:var(--lime);
+  padding:3px 10px;
+  border-radius:100px;
+  transition:all .3s;
+}
+
+.tb-right {
+  display:flex;
+  align-items:center;
+  gap:20px;
+}
+
+.coach-chip {
+  font-family:var(--type-m);
+  font-size:10px;
+  color:var(--ghost);
+  letter-spacing:1px;
+}
+.coach-chip b { color:var(--lime); font-weight:500; }
+
+.exit-btn {
+  background:none; border:none;
+  font-family:var(--type-m);
+  font-size:9px;
+  letter-spacing:3px;
+  text-transform:uppercase;
+  color:var(--ghost);
+  cursor:pointer;
+  border-bottom:1px solid transparent;
+  transition:all .2s;
+  padding-bottom:2px;
+}
+.exit-btn:hover { color:var(--red); border-bottom-color:var(--red); }
+
+/* Month strip */
+.month-strip {
+  background:var(--paper2);
+  border-bottom:1.5px solid var(--ink);
+  padding:0 32px;
+  display:flex;
+  align-items:center;
+  overflow-x:auto;
+}
+.month-strip::-webkit-scrollbar { height:0; }
+
+.m-tab {
+  padding:13px 18px;
+  font-family:var(--type-m);
+  font-size:9px;
+  letter-spacing:3px;
+  color:var(--ghost);
+  cursor:pointer;
+  border:none; background:none;
+  border-bottom:2px solid transparent;
+  white-space:nowrap;
+  text-transform:uppercase;
+  transition:all .15s;
+}
+.m-tab:hover { color:var(--ink); }
+.m-tab.on { color:var(--ink); border-bottom-color:var(--ink); }
+
+.m-add {
+  margin-left:6px;
+  padding:7px 14px;
+  background:none;
+  border:1.5px dashed var(--rule);
+  color:var(--ghost);
+  font-family:var(--type-m);
+  font-size:9px;
+  letter-spacing:3px;
+  text-transform:uppercase;
+  cursor:pointer;
+  white-space:nowrap;
+  transition:all .2s;
+}
+.m-add:hover { border-color:var(--ink); color:var(--ink); }
+
+/* Shell grid */
+.shell {
+  display:grid;
+  grid-template-columns:1fr 276px;
+  min-height:calc(100vh - 104px);
+}
+
+/* ══════════════════
+   TABLE ZONE
+══════════════════ */
+.table-zone {
+  padding:28px 32px 60px;
+  overflow-x:auto;
+}
+
+.zone-head {
+  display:flex;
+  align-items:baseline;
+  justify-content:space-between;
+  margin-bottom:20px;
+  flex-wrap:wrap;
+  gap:12px;
+}
+
+.zone-title {
+  font-family:var(--type-d);
+  font-size:40px;
+  line-height:1;
+  letter-spacing:1px;
+}
+.zone-title small {
+  font-family:var(--type-m);
+  font-size:11px;
+  letter-spacing:2px;
+  color:var(--ghost);
+  font-weight:400;
+  margin-left:14px;
+  vertical-align:middle;
+}
+
+.add-row-btn {
+  background:var(--lime);
+  color:var(--ink);
+  border:none;
+  padding:11px 22px;
+  font-family:var(--type-d);
+  font-size:16px;
+  letter-spacing:2px;
+  cursor:pointer;
+  position:relative;
+  overflow:hidden;
+  transition:transform .1s;
+}
+.add-row-btn::before {
+  content:'';
+  position:absolute; inset:0;
+  background:var(--ink);
+  transform:translateY(101%);
+  transition:transform .28s cubic-bezier(.77,0,.18,1);
+}
+.add-row-btn:hover::before { transform:translateY(0); }
+.add-row-btn:hover { color:var(--lime); }
+.add-row-btn span { position:relative; z-index:1; }
+.add-row-btn:active { transform:scale(.98); }
+
+/* Table */
+table {
+  width:100%;
+  border-collapse:collapse;
+  min-width:880px;
+}
+
+thead th {
+  background:var(--ink);
+  color:var(--paper);
+  padding:10px 12px;
+  text-align:left;
+  font-family:var(--type-m);
+  font-size:9px;
+  letter-spacing:2.5px;
+  text-transform:uppercase;
+  white-space:nowrap;
+  font-weight:400;
+}
+thead th:first-child { padding-left:14px; }
+
+tbody tr {
+  border-bottom:1px solid var(--rule);
+  transition:background .1s;
+}
+tbody tr:hover { background:rgba(0,0,0,.024); }
+
+td.rn {
+  font-family:var(--type-d);
+  font-size:11px;
+  color:var(--rule);
+  padding:8px 6px 8px 14px;
+  width:32px;
+  letter-spacing:1px;
+}
+
+tbody td {
+  border-right:1px solid var(--rule);
+  padding:2px 0;
+}
+tbody td:last-child { border-right:none; }
+
+tbody td input,
+tbody td textarea {
+  width:100%;
+  background:transparent;
+  border:none;
+  color:var(--ink);
+  font-family:var(--type-m);
+  font-size:12px;
+  padding:9px 11px;
+  outline:none;
+  resize:none;
+  line-height:1.4;
+}
+tbody td input:focus,
+tbody td textarea:focus {
+  background:rgba(200,245,90,.1);
+}
+
+td.ncf-td {
+  font-family:var(--type-d);
+  font-size:18px;
+  letter-spacing:1px;
+  padding:8px 12px;
+  white-space:nowrap;
+}
+td.ncf-td.hot { color:var(--lime2); }
+
+/* IR */
+td.ir-td { padding:2px 0; }
+.ir-wrap {
+  display:flex;
+  align-items:center;
+}
+.ir-wrap input {
+  width:46px;
+  text-align:center;
+}
+.ir-bar {
+  flex:1;
+  height:3px;
+  background:var(--rule);
+  margin-right:10px;
+  border-radius:2px;
+  overflow:hidden;
+}
+.ir-fill {
+  height:100%;
+  border-radius:2px;
+  transition:width .35s ease, background .35s ease;
+}
+
+/* Delete */
+td.del-td { width:36px; border-right:none; }
+.del-btn {
+  background:none; border:none;
+  color:var(--rule); cursor:pointer;
+  padding:8px; font-size:13px; width:100%;
+  transition:color .15s;
+}
+.del-btn:hover { color:var(--red); }
+
+/* Empty */
+.empty-state {
+  padding:80px 20px;
+  text-align:center;
+}
+.empty-num {
+  font-family:var(--type-d);
+  font-size:clamp(80px,16vw,140px);
+  color:var(--rule);
+  line-height:1;
+  letter-spacing:4px;
+}
+.empty-label {
+  font-family:var(--type-m);
+  font-size:10px;
+  letter-spacing:3px;
+  color:var(--ghost);
+  text-transform:uppercase;
+  margin-top:10px;
+}
+
+/* ══════════════════
+   SCOREBOARD
+══════════════════ */
+.scoreboard {
+  border-left:1.5px solid var(--ink);
+  background:var(--paper2);
+  padding:28px 22px;
+  position:sticky;
+  top:104px;
+  height:calc(100vh - 104px);
+  overflow-y:auto;
+}
+.scoreboard::-webkit-scrollbar { width:0; }
+
+.sb-head {
+  font-family:var(--type-d);
+  font-size:30px;
+  line-height:.95;
+  letter-spacing:1px;
+  margin-bottom:24px;
+}
+.sb-head em {
+  font-family:var(--type-s);
+  font-style:italic;
+  font-size:24px;
+  color:var(--ghost);
+}
+
+.stat-row {
+  display:flex;
+  justify-content:space-between;
+  align-items:baseline;
+  padding:11px 0;
+  border-bottom:1px solid var(--rule);
+  gap:8px;
+}
+.stat-row:last-of-type { border-bottom:none; }
+
+.stat-lbl {
+  font-family:var(--type-m);
+  font-size:9px;
+  letter-spacing:2px;
+  text-transform:uppercase;
+  color:var(--ghost);
+  flex:1;
+  line-height:1.5;
+}
+
+.stat-val {
+  font-family:var(--type-d);
+  font-size:30px;
+  line-height:1;
+  letter-spacing:1px;
+  text-align:right;
+}
+.stat-val.lime { color:var(--lime2); }
+
+/* IR legend */
+.ir-legend {
+  margin-top:22px;
+  padding-top:18px;
+  border-top:1.5px solid var(--ink);
+}
+.ir-legend-head {
+  font-family:var(--type-d);
+  font-size:20px;
+  letter-spacing:2px;
+  margin-bottom:14px;
+  line-height:1;
+}
+
+.ir-entry {
+  display:flex;
+  align-items:flex-start;
+  gap:10px;
+  margin-bottom:9px;
+}
+
+.ir-chip {
+  font-family:var(--type-d);
+  font-size:13px;
+  letter-spacing:1px;
+  padding:3px 8px;
+  min-width:44px;
+  text-align:center;
+  flex-shrink:0;
+}
+.ir-chip.c1 { background:#1a1a1a; color:var(--lime); }
+.ir-chip.c2 { background:#252516; color:#b4e36a; }
+.ir-chip.c3 { background:#332a14; color:var(--amber); }
+.ir-chip.c4 { background:#331a10; color:#e07040; }
+.ir-chip.c5 { background:#330d0d; color:var(--red); }
+
+.ir-desc {
+  font-family:var(--type-m);
+  font-size:10px;
+  letter-spacing:.5px;
+  color:var(--ghost);
+  line-height:1.5;
+}
+
+/* ══════════════════
+   MODAL
+══════════════════ */
+.overlay {
+  position:fixed; inset:0;
+  background:rgba(15,15,15,.55);
+  backdrop-filter:blur(6px);
+  z-index:200;
+  display:none;
+  align-items:center;
+  justify-content:center;
+}
+.overlay.on { display:flex; }
+
+.modal {
+  background:var(--paper);
+  border:1.5px solid var(--ink);
+  padding:40px 44px;
+  width:380px;
+  animation:slideup .22s ease;
+}
+@keyframes slideup {
+  from{opacity:0;transform:translateY(18px);}
+  to{opacity:1;transform:translateY(0);}
+}
+
+.modal-title {
+  font-family:var(--type-d);
+  font-size:30px;
+  letter-spacing:2px;
+  margin-bottom:20px;
+}
+
+.modal-row {
+  display:flex;
+  gap:10px;
+  margin-top:20px;
+}
+
+.btn-ok {
+  flex:1;
+  background:var(--ink);
+  color:var(--paper);
+  border:none;
+  padding:13px;
+  font-family:var(--type-d);
+  font-size:16px;
+  letter-spacing:2px;
+  cursor:pointer;
+  transition:background .2s;
+}
+.btn-ok:hover { background:#333; }
+
+.btn-no {
+  flex:1;
+  background:none;
+  border:1.5px solid var(--rule);
+  color:var(--ghost);
+  padding:13px;
+  font-family:var(--type-m);
+  font-size:10px;
+  letter-spacing:2px;
+  cursor:pointer;
+  text-transform:uppercase;
+  transition:all .2s;
+}
+.btn-no:hover { border-color:var(--ink); color:var(--ink); }
+
+/* ══════════════════
+   RESPONSIVE
+══════════════════ */
+@media(max-width:920px) {
+  #login-screen { flex-direction:column; }
+  .login-left { min-height:42vh; padding:40px 32px; }
+  .login-right { width:100%; padding:40px 32px; }
+  .shell { grid-template-columns:1fr; }
+  .scoreboard {
+    position:static; height:auto;
+    border-left:none; border-top:1.5px solid var(--ink);
+  }
+}
+</style>
+</head>
+<body>
+
+<!-- ══════════════
+     LOGIN
+══════════════ -->
+<div id="login-screen">
+
+  <div class="login-left">
+    <div class="login-bg-text">FIELD&#10;LOG</div>
+
+    <div class="login-eyebrow">Dating Growth — Coach Portal</div>
+
+    <div>
+      <div class="login-hero">
+        TRACK<br>THE<br><em>Field.</em>
+      </div>
+      <div class="dots-row">
+        <div class="dot"></div><div class="dot"></div><div class="dot"></div>
+      </div>
+    </div>
+
+    <div class="login-tagline">
+      Every approach counted.<br>
+      Every number logged.<br>
+      Every session — one step closer.
+    </div>
+  </div>
+
+  <div class="login-right">
+    <div class="lf-label">SIGN IN</div>
+    <div class="lf-sub">Private coach access</div>
+
+    <div class="field">
+      <label>Username</label>
+      <input type="text" id="username" placeholder="your_handle" autocomplete="username">
+    </div>
+    <div class="field">
+      <label>Password</label>
+      <input type="password" id="password" placeholder="••••••••" autocomplete="current-password">
+    </div>
+
+    <button class="login-btn" onclick="doLogin()">
+      <span>ENTER THE FIELD →</span>
+    </button>
+    <div class="login-err" id="login-err">Wrong credentials — try again.</div>
+  </div>
+
+</div>
+
+<!-- ══════════════
+     APP
+══════════════ -->
+<div id="app-screen">
+
+  <div class="topbar">
+    <div class="tb-brand">
+      <div class="live-dot"></div>
+      FIELD LOG
+    </div>
+    <div class="save-chip" id="save-chip">● LIVE</div>
+    <div class="tb-right">
+      <div class="coach-chip">Coach <b id="coach-disp"></b></div>
+      <button class="exit-btn" onclick="doLogout()">Exit</button>
+    </div>
+  </div>
+
+  <div class="month-strip" id="month-strip">
+    <button class="m-add" onclick="openModal()">＋ New Month</button>
+  </div>
+
+  <div class="shell">
+
+    <!-- Table -->
+    <div class="table-zone">
+      <div class="zone-head">
+        <div class="zone-title">
+          SESSION LOG<small id="active-lbl"></small>
+        </div>
+        <button class="add-row-btn" onclick="addRow()"><span>＋ LOG SESSION</span></button>
+      </div>
+      <div id="tbl"></div>
+    </div>
+
+    <!-- Scoreboard sidebar -->
+    <div class="scoreboard">
+      <div class="sb-head">THE<br><em>Score.</em></div>
+
+      <div class="stat-row">
+        <div class="stat-lbl">Total Approaches</div>
+        <div class="stat-val" id="s-app">0</div>
+      </div>
+      <div class="stat-row">
+        <div class="stat-lbl">Contacts Closed</div>
+        <div class="stat-val lime" id="s-con">0</div>
+      </div>
+      <div class="stat-row">
+        <div class="stat-lbl">Avg. Close Rate</div>
+        <div class="stat-val" id="s-ncf">—</div>
+      </div>
+      <div class="stat-row">
+        <div class="stat-lbl">Replied to 1st Text</div>
+        <div class="stat-val" id="s-rep">0</div>
+      </div>
+      <div class="stat-row">
+        <div class="stat-lbl">Dates Booked</div>
+        <div class="stat-val" id="s-bkd">0</div>
+      </div>
+      <div class="stat-row">
+        <div class="stat-lbl">Dates Attended</div>
+        <div class="stat-val" id="s-att">0</div>
+      </div>
+
+      <div class="ir-legend">
+        <div class="ir-legend-head">RESISTANCE<br>SCALE</div>
+        <div class="ir-entry"><span class="ir-chip c1">1–2</span><span class="ir-desc">Effortless — fully in state, zero friction</span></div>
+        <div class="ir-entry"><span class="ir-chip c2">3–4</span><span class="ir-desc">Mild nerves — still flowing, body onboard</span></div>
+        <div class="ir-entry"><span class="ir-chip c3">5–6</span><span class="ir-desc">Noticeable push — manageable, clean exec</span></div>
+        <div class="ir-entry"><span class="ir-chip c4">7–8</span><span class="ir-desc">Heavy resistance — loud self-talk, friction</span></div>
+        <div class="ir-entry"><span class="ir-chip c5">9–10</span><span class="ir-desc">Identity-level fear — extreme avoidance</span></div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- New Month Modal -->
+<div class="overlay" id="overlay">
+  <div class="modal">
+    <div class="modal-title">NEW MONTH</div>
+    <div class="field">
+      <label>Month Label</label>
+      <input type="text" id="month-inp" placeholder="e.g. Jun 2025"
+        style="width:100%;background:transparent;border:none;border-bottom:1.5px solid var(--ink);padding:10px 0;font-family:var(--type-m);font-size:15px;color:var(--ink);outline:none;">
+    </div>
+    <div class="modal-row">
+      <button class="btn-no" onclick="closeModal()">CANCEL</button>
+      <button class="btn-ok" onclick="confirmMonth()">ADD →</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ════════════════
+   CREDENTIALS
+   Add/remove coaches here before deploy
+════════════════ */
+const COACHES = {
+  "victor":  "victor123",
+  "mike":    "mike456",
+  "erick":   "erick789",
+  "tim":     "tim",
+  "coach4":  "pass2025",
+  "coach5":  "letmein9",
+};
+
+/* ════════════════
+   STATE
+════════════════ */
+let coach = null, activeMonth = null, data = {}, saveTimer = null;
+
+/* ════════════════
+   UTILS
+════════════════ */
+const $ = id => document.getElementById(id);
+const pf = v => parseFloat(v) || 0;
+function esc(s) {
+  return String(s)
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;')
+    .replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+/* ════════════════
+   AUTH
+════════════════ */
+function doLogin() {
+  const u = $('username').value.trim().toLowerCase();
+  const p = $('password').value;
+  if (COACHES[u] && COACHES[u] === p) {
+    coach = u;
+    $('login-err').style.display = 'none';
+    loadData();
+    showApp();
+  } else {
+    const el = $('login-err');
+    el.style.display = 'block';
+    el.style.animation = 'none';
+    requestAnimationFrame(() => { el.style.animation = ''; });
+  }
+}
+
+function doLogout() {
+  saveNow();
+  coach = null; activeMonth = null; data = {};
+  if (saveTimer) clearInterval(saveTimer);
+  $('app-screen').style.display = 'none';
+  $('login-screen').style.display = 'flex';
+  $('username').value = '';
+  $('password').value = '';
+}
+
+$('password').addEventListener('keydown', e => { if (e.key === 'Enter') doLogin(); });
+$('username').addEventListener('keydown', e => { if (e.key === 'Enter') $('password').focus(); });
+
+/* ════════════════
+   PERSISTENCE
+════════════════ */
+const storageKey = () => 'fieldlog__' + coach;
+
+function loadData() {
+  const raw = localStorage.getItem(storageKey());
+  if (raw) {
+    try { data = JSON.parse(raw); } catch { data = {}; }
+  } else {
+    const lbl = new Date().toLocaleDateString('en-US', { month:'short', year:'numeric' });
+    data = { [lbl]: [] };
+  }
+}
+
+function saveNow() {
+  if (!coach) return;
+  localStorage.setItem(storageKey(), JSON.stringify(data));
+  const chip = $('save-chip');
+  if (chip) {
+    chip.textContent = '✓ SAVED';
+    setTimeout(() => { if (chip) chip.textContent = '● LIVE'; }, 1500);
+  }
+}
+
+function startAutoSave() {
+  if (saveTimer) clearInterval(saveTimer);
+  saveTimer = setInterval(saveNow, 5000);
+}
+
+/* ════════════════
+   APP INIT
+════════════════ */
+function showApp() {
+  $('login-screen').style.display = 'none';
+  $('app-screen').style.display = 'block';
+  $('coach-disp').textContent = coach.toUpperCase();
+  const months = Object.keys(data);
+  activeMonth = months[months.length - 1];
+  renderTabs();
+  renderTable();
+  startAutoSave();
+}
+
+/* ════════════════
+   MONTH TABS
+════════════════ */
+function renderTabs() {
+  const strip = $('month-strip');
+  const addBtn = strip.querySelector('.m-add');
+  strip.querySelectorAll('.m-tab').forEach(t => t.remove());
+  Object.keys(data).forEach(m => {
+    const t = document.createElement('button');
+    t.className = 'm-tab' + (m === activeMonth ? ' on' : '');
+    t.textContent = m;
+    t.onclick = () => { activeMonth = m; renderTabs(); renderTable(); };
+    strip.insertBefore(t, addBtn);
+  });
+}
+
+function openModal() {
+  $('overlay').classList.add('on');
+  setTimeout(() => $('month-inp').focus(), 80);
+}
+function closeModal() { $('overlay').classList.remove('on'); }
+
+function confirmMonth() {
+  const lbl = $('month-inp').value.trim();
+  if (!lbl) return;
+  if (!data[lbl]) data[lbl] = [];
+  activeMonth = lbl;
+  saveNow(); renderTabs(); renderTable(); closeModal();
+  $('month-inp').value = '';
+}
+
+$('month-inp').addEventListener('keydown', e => {
+  if (e.key === 'Enter') confirmMonth();
+  if (e.key === 'Escape') closeModal();
+});
+$('overlay').addEventListener('click', e => { if (e.target === $('overlay')) closeModal(); });
+
+/* ════════════════
+   TABLE COLUMNS
+════════════════ */
+const COLS = [
+  { key:'date',      label:'Date',          type:'date', w:'108px' },
+  { key:'approaches',label:'Approaches',    type:'num',  w:'86px'  },
+  { key:'cold',      label:'Cold',          type:'num',  w:'60px'  },
+  { key:'ioi',       label:'IOI',           type:'num',  w:'58px'  },
+  { key:'contacts',  label:'Contacts',      type:'num',  w:'76px'  },
+  { key:'ncf',       label:'Close %',       type:'comp', w:'78px'  },
+  { key:'replies',   label:'Replied',       type:'num',  w:'70px'  },
+  { key:'booked',    label:'Booked',        type:'num',  w:'68px'  },
+  { key:'attended',  label:'Attended',      type:'num',  w:'74px'  },
+  { key:'ir',        label:'Resistance',    type:'ir',   w:'130px' },
+  { key:'notes',     label:'Notes',         type:'text', w:'auto'  },
+];
+
+/* ════════════════
+   TABLE RENDER
+════════════════ */
+function rows() { return data[activeMonth] || []; }
+
+function addRow() {
+  if (!data[activeMonth]) data[activeMonth] = [];
+  const today = new Date().toISOString().split('T')[0];
+  data[activeMonth].push({
+    date:today, approaches:'', cold:'', ioi:'', contacts:'',
+    replies:'', booked:'', attended:'', ir:'', notes:''
+  });
+  renderTable(); saveNow();
+  setTimeout(() => {
+    const trs = document.querySelectorAll('tbody tr');
+    if (trs.length) trs[trs.length-1].scrollIntoView({ behavior:'smooth', block:'end' });
+  }, 60);
+}
+
+function delRow(i) { data[activeMonth].splice(i, 1); renderTable(); saveNow(); }
+
+function upd(i, k, v) {
+  if (!data[activeMonth]?.[i]) return;
+  data[activeMonth][i][k] = v;
+  if (['approaches','contacts'].includes(k)) refreshNCF(i);
+  updateScore();
+}
+
+function ncfStr(row) {
+  const a = pf(row.approaches), c = pf(row.contacts);
+  return a ? ((c/a)*100).toFixed(1)+'%' : '—';
+}
+function ncfPct(row) {
+  const a = pf(row.approaches), c = pf(row.contacts);
+  return a ? (c/a)*100 : 0;
+}
+
+function irColor(v) {
+  const n = pf(v);
+  if (!n)   return '#d5cfc3';
+  if (n<=2) return '#c8f55a';
+  if (n<=4) return '#b4e36a';
+  if (n<=6) return '#f4a261';
+  if (n<=8) return '#e07040';
+  return '#e63946';
+}
+
+function renderTable() {
+  const rs = rows();
+  $('active-lbl').textContent = activeMonth;
+
+  if (!rs.length) {
+    $('tbl').innerHTML = `
+      <div class="empty-state">
+        <div class="empty-num">00</div>
+        <div class="empty-label">No sessions yet — hit LOG SESSION</div>
+      </div>`;
+    updateScore(); return;
+  }
+
+  let h = `<table><thead><tr><th style="width:32px">#</th>`;
+  COLS.forEach(c => { h += `<th style="width:${c.w}">${c.label}</th>`; });
+  h += `<th style="width:36px"></th></tr></thead><tbody>`;
+
+  rs.forEach((row, i) => {
+    h += `<tr>`;
+    h += `<td class="rn">${String(i+1).padStart(2,'0')}</td>`;
+
+    COLS.forEach(c => {
+      if (c.type === 'comp') {
+        const v = ncfStr(row), hot = ncfPct(row) > 30;
+        h += `<td class="ncf-td${hot?' hot':''}" id="ncf-${i}">${v}</td>`;
+
+      } else if (c.type === 'ir') {
+        const pct = Math.min(100, (pf(row.ir)/10)*100);
+        const col = irColor(row.ir);
+        h += `<td class="ir-td">
+          <div class="ir-wrap">
+            <input type="number" min="1" max="10" value="${esc(row.ir)}"
+              oninput="upd(${i},'ir',this.value);refreshIR(${i})">
+            <div class="ir-bar">
+              <div class="ir-fill" id="irf-${i}" style="width:${pct}%;background:${col}"></div>
+            </div>
+          </div>
+        </td>`;
+
+      } else if (c.type === 'text') {
+        h += `<td><textarea rows="1" style="min-height:36px;"
+          oninput="upd(${i},'${c.key}',this.value)">${esc(row[c.key]||'')}</textarea></td>`;
+
+      } else if (c.type === 'date') {
+        h += `<td><input type="date" value="${esc(row[c.key]||'')}"
+          oninput="upd(${i},'${c.key}',this.value)"></td>`;
+
+      } else {
+        const extra = ['approaches','contacts'].includes(c.key)
+          ? `;refreshNCF(${i})` : '';
+        h += `<td><input type="number" min="0" value="${esc(row[c.key]||'')}"
+          oninput="upd(${i},'${c.key}',this.value)${extra}"></td>`;
+      }
+    });
+
+    h += `<td class="del-td"><button class="del-btn" onclick="delRow(${i})">✕</button></td>`;
+    h += `</tr>`;
+  });
+
+  h += `</tbody></table>`;
+  $('tbl').innerHTML = h;
+  updateScore();
+}
+
+function refreshNCF(i) {
+  const row = (data[activeMonth]||[])[i]; if (!row) return;
+  const el = $(`ncf-${i}`); if (!el) return;
+  el.textContent = ncfStr(row);
+  el.className = 'ncf-td' + (ncfPct(row) > 30 ? ' hot' : '');
+}
+
+function refreshIR(i) {
+  const row = (data[activeMonth]||[])[i]; if (!row) return;
+  const fill = $(`irf-${i}`); if (!fill) return;
+  const pct = Math.min(100, (pf(row.ir)/10)*100);
+  fill.style.width = pct+'%';
+  fill.style.background = irColor(row.ir);
+}
+
+/* ════════════════
+   SCOREBOARD
+════════════════ */
+function updateScore() {
+  const rs = rows();
+  let app=0, con=0, rep=0, bkd=0, att=0, ncfSum=0, ncfCnt=0;
+  rs.forEach(r => {
+    app += pf(r.approaches); con += pf(r.contacts);
+    rep += pf(r.replies);    bkd += pf(r.booked); att += pf(r.attended);
+    const a = pf(r.approaches), c = pf(r.contacts);
+    if (a) { ncfSum += (c/a)*100; ncfCnt++; }
+  });
+  const avg = ncfCnt ? (ncfSum/ncfCnt).toFixed(1)+'%' : '—';
+  $('s-app').textContent = app;
+  $('s-con').textContent = con;
+  $('s-ncf').textContent = avg;
+  $('s-rep').textContent = rep;
+  $('s-bkd').textContent = bkd;
+  $('s-att').textContent = att;
+}
+</script>
+</body>
+</html>
