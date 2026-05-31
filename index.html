@@ -347,7 +347,7 @@ body::after {
 /* Shell grid */
 .shell {
   display:grid;
-  grid-template-columns:1fr 276px;
+  grid-template-columns:1fr 310px;
   min-height:calc(100vh - 104px);
 }
 
@@ -573,8 +573,8 @@ td.del-td { width:36px; border-right:none; }
 
 .stat-lbl {
   font-family:var(--type-m);
-  font-size:9px;
-  letter-spacing:2px;
+  font-size:10px;
+  letter-spacing:1.5px;
   text-transform:uppercase;
   color:var(--ghost);
   flex:1;
@@ -802,11 +802,11 @@ td.del-td { width:36px; border-right:none; }
 
     <!-- Scoreboard sidebar -->
     <div class="scoreboard">
-      <div class="sb-head">THE<br><em>Score.</em></div>
+      <div class="sb-head">OUT<br><em>comes.</em></div>
 
       <div class="stat-row">
         <div class="stat-lbl">Total Approaches</div>
-        <div class="stat-val" id="s-app">0</div>
+        <div class="stat-val" id="s-app" style="color:var(--ink);font-size:34px;font-weight:900;">0</div>
       </div>
       <div class="stat-row">
         <div class="stat-lbl">Contacts Closed</div>
@@ -1015,7 +1015,7 @@ const COLS = [
   { key:'booked',    label:'Booked',        type:'num',  w:'68px'  },
   { key:'attended',  label:'Attended',      type:'num',  w:'74px'  },
   { key:'ir',        label:'Resistance',    type:'ir',   w:'130px' },
-  { key:'notes',     label:'Notes',         type:'text', w:'auto'  },
+  { key:'notes',     label:'Notes',         type:'text', w:'280px' },
 ];
 
 /* ════════════════
@@ -1105,8 +1105,8 @@ function renderTable() {
         </td>`;
 
       } else if (c.type === 'text') {
-        h += `<td><textarea rows="1" style="min-height:36px;"
-          oninput="upd(${i},'${c.key}',this.value)">${esc(row[c.key]||'')}</textarea></td>`;
+        h += `<td style="min-width:280px;"><textarea rows="2" style="min-height:52px;width:100%;"
+          oninput="upd(${i},'${c.key}',this.value);this.style.height='auto';this.style.height=this.scrollHeight+'px'">${esc(row[c.key]||'')}</textarea></td>`;
 
       } else if (c.type === 'date') {
         h += `<td><input type="date" value="${esc(row[c.key]||'')}"
