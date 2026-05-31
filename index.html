@@ -550,8 +550,9 @@ td.del-td { width:36px; border-right:none; }
 .sb-head {
   font-family:var(--type-d);
   font-size:30px;
-  line-height:.95;
-  letter-spacing:1px;
+  line-height:1;
+  letter-spacing:2px;
+  color:var(--ink);
   margin-bottom:24px;
 }
 .sb-head em {
@@ -802,7 +803,7 @@ td.del-td { width:36px; border-right:none; }
 
     <!-- Scoreboard sidebar -->
     <div class="scoreboard">
-      <div class="sb-head">OUT<br><em>comes.</em></div>
+      <div class="sb-head">OUTCOMES</div>
 
       <div class="stat-row">
         <div class="stat-lbl">Total Approaches</div>
@@ -827,6 +828,10 @@ td.del-td { width:36px; border-right:none; }
       <div class="stat-row">
         <div class="stat-lbl">Dates Attended</div>
         <div class="stat-val" id="s-att">0</div>
+      </div>
+      <div class="stat-row">
+        <div class="stat-lbl">Avg. Internal Resistance</div>
+        <div class="stat-val" id="s-ir" style="color:var(--ink);">—</div>
       </div>
 
       <div class="ir-legend">
@@ -1149,20 +1154,28 @@ function refreshIR(i) {
 ════════════════ */
 function updateScore() {
   const rs = rows();
-  let app=0, con=0, rep=0, bkd=0, att=0, ncfSum=0, ncfCnt=0;
+  let app=0, con=0, rep=0, bkd=0, att=0, ncfSum=0, ncfCnt=0, irSum=0, irCnt=0;
   rs.forEach(r => {
     app += pf(r.approaches); con += pf(r.contacts);
     rep += pf(r.replies);    bkd += pf(r.booked); att += pf(r.attended);
     const a = pf(r.approaches), c = pf(r.contacts);
     if (a) { ncfSum += (c/a)*100; ncfCnt++; }
+    const ir = pf(r.ir);
+    if (ir) { irSum += ir; irCnt++; }
   });
-  const avg = ncfCnt ? (ncfSum/ncfCnt).toFixed(1)+'%' : '—';
+  const avg    = ncfCnt ? (ncfSum/ncfCnt).toFixed(1)+'%' : '—';
+  const avgIR  = irCnt  ? (irSum/irCnt).toFixed(1) : '—';
   $('s-app').textContent = app;
   $('s-con').textContent = con;
   $('s-ncf').textContent = avg;
   $('s-rep').textContent = rep;
   $('s-bkd').textContent = bkd;
   $('s-att').textContent = att;
+  $('s-ir').textContent  = avgIR;
+  // color the avg IR value by severity
+  const irEl = $('s-ir');
+  const n = parseFloat(avgIR)||0;
+  irEl.style.color = n<=2?'#a8d93a': n<=4?'#b4e36a': n<=6?'#f4a261': n<=8?'#e07040':'#e63946';
 }
 </script>
 </body>
